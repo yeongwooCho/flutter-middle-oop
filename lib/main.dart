@@ -14,6 +14,9 @@ class _App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        fontFamily: 'NotoSans',
+      ),
       home: Scaffold(
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
