@@ -11,6 +11,7 @@ class DefaultLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white, // 기본배경이 완전 흰색은 아니다.
       body: child,
     );
   }
