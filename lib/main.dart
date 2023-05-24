@@ -1,9 +1,10 @@
 import 'package:code_factory_middle/common/component/custom_text_form_field.dart';
+import 'package:code_factory_middle/common/view/splash_screen.dart';
 import 'package:code_factory_middle/user/view/login_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(_App());
+  runApp(const _App());
 }
 
 // primary로 관리하기
@@ -18,7 +19,7 @@ class _App extends StatelessWidget {
       theme: ThemeData(
         fontFamily: 'NotoSans',
       ),
-      home: LoginScreen(),
+      home: SplashScreen(),
     );
   }
 }
