@@ -4,11 +4,20 @@ import 'dart:io';
 import 'package:code_factory_middle/common/component/custom_text_form_field.dart';
 import 'package:code_factory_middle/common/const/colors.dart';
 import 'package:code_factory_middle/common/layout/default_layout.dart';
+import 'package:code_factory_middle/common/view/root_tab.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  String username = '';
+  String password = '';
 
   @override
   Widget build(BuildContext context) {
@@ -40,19 +49,23 @@ class LoginScreen extends StatelessWidget {
                 CustomTextFormField(
                   hintText: '이메일을 입력해주세요',
                   autofocus: false,
-                  onChanged: (String value) {},
+                  onChanged: (String value) {
+                    username = value;
+                  },
                 ),
                 const SizedBox(height: 16.0),
                 CustomTextFormField(
                   hintText: '비밀번호를 입력해주세요',
                   autofocus: false,
                   obscureText: true,
-                  onChanged: (String value) {},
+                  onChanged: (String value) {
+                    password = value;
+                  },
                 ),
                 const SizedBox(height: 16.0),
                 ElevatedButton(
                   onPressed: () async {
-                    String rawString = 'test@codefactory.ai:testtest';
+                    String rawString = '$username:$password';
 
                     Codec<String, String> stringToBase64 = utf8.fuse(base64);
 
@@ -65,6 +78,10 @@ class LoginScreen extends StatelessWidget {
                           'authorization': 'Basic $token',
                         },
                       ),
+                    );
+
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => RootTab()),
                     );
                     print(resp.data);
                   },
