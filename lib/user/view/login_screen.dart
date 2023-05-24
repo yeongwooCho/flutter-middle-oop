@@ -3,10 +3,12 @@ import 'dart:io';
 
 import 'package:code_factory_middle/common/component/custom_text_form_field.dart';
 import 'package:code_factory_middle/common/const/colors.dart';
+import 'package:code_factory_middle/common/const/data.dart';
 import 'package:code_factory_middle/common/layout/default_layout.dart';
 import 'package:code_factory_middle/common/view/root_tab.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -22,6 +24,8 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final dio = Dio();
+
+    final storage = FlutterSecureStorage();
 
     // localhost
     String emulatorIp = '10.0.2.2:3000';
@@ -79,6 +83,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         },
                       ),
                     );
+
+                    final refreshToken = resp.data['refreshToken'];
+                    final accessToken = resp.data['accessToken'];
+
+                    await storage.write(key: REFRESH_TOKEN_KEY, value: refreshToken);
+                    await storage.write(key: ACCESS_TOKEN_KEY, value: accessToken);
 
                     Navigator.of(context).push(
                       MaterialPageRoute(builder: (_) => RootTab()),
