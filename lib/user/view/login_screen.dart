@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:code_factory_middle/common/component/custom_text_form_field.dart';
@@ -51,8 +52,21 @@ class LoginScreen extends StatelessWidget {
                 const SizedBox(height: 16.0),
                 ElevatedButton(
                   onPressed: () async {
-                    // final resp = dio.post('http://$ip/auth/login');
-                    // print(resp);
+                    String rawString = 'test@codefactory.ai:testtest';
+
+                    Codec<String, String> stringToBase64 = utf8.fuse(base64);
+
+                    String token = stringToBase64.encode(rawString);
+
+                    final resp = await dio.post(
+                      'http://$ip/auth/login',
+                      options: Options(
+                        headers: {
+                          'authorization': 'Basic $token',
+                        },
+                      ),
+                    );
+                    print(resp.data);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: PRIMARY_COLOR,
@@ -60,7 +74,20 @@ class LoginScreen extends StatelessWidget {
                   child: Text('로그인'),
                 ),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () async {
+                    String refreshToken =
+                        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3RAY29kZWZhY3RvcnkuYWkiLCJzdWIiOiJmNTViMzJkMi00ZDY4LTRjMWUtYTNjYS1kYTlkN2QwZDkyZTUiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTY4NDkxOTUxNSwiZXhwIjoxNjg1MDA1OTE1fQ.m4Q_shhqWxnhgqLtgVBXUqhaQibhK07zZW57jQhYWNM';
+
+                    final resp = await dio.post(
+                      'http://$ip/auth/token',
+                      options: Options(
+                        headers: {
+                          'authorization': 'Bearer $refreshToken',
+                        },
+                      ),
+                    );
+                    print(resp);
+                  },
                   style: TextButton.styleFrom(
                     foregroundColor: Colors.black,
                   ),
