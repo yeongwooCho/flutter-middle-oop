@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:code_factory_middle/common/component/custom_text_form_field.dart';
 import 'package:code_factory_middle/common/const/colors.dart';
 import 'package:code_factory_middle/common/layout/default_layout.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -8,6 +11,13 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final dio = Dio();
+
+    // localhost
+    String emulatorIp = '10.0.2.2:3000';
+    String simulatorIp = '127.0.0.1:3000';
+    String ip = Platform.isAndroid == true ? emulatorIp : simulatorIp;
+
     return DefaultLayout(
       child: SingleChildScrollView(
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
@@ -40,7 +50,10 @@ class LoginScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 16.0),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () async {
+                    // final resp = dio.post('http://$ip/auth/login');
+                    // print(resp);
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: PRIMARY_COLOR,
                   ),
