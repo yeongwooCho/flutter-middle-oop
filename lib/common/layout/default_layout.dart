@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 class DefaultLayout extends StatelessWidget {
   final Color? backgroundColor;
   final Widget child;
+  final String? title;
 
   const DefaultLayout({
     required this.child,
     this.backgroundColor,
+    this.title,
     Key? key,
   }) : super(key: key);
 
@@ -14,7 +16,28 @@ class DefaultLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: backgroundColor ?? Colors.white, // 기본배경이 완전 흰색은 아니다.
+      appBar: renderAppBar(),
       body: child,
     );
+  }
+
+  AppBar? renderAppBar() {
+    if (title == null) {
+      return null;
+    } else {
+      return AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0, // 없는게 트렌드이다.
+        title: Text(
+          title!,
+          style: TextStyle(
+            fontSize: 16.0,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        // AppBar위에 올라가는 Widget 색상
+        foregroundColor: Colors.black,
+      );
+    }
   }
 }
