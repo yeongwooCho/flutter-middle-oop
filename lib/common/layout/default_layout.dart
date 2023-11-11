@@ -4,11 +4,13 @@ class DefaultLayout extends StatelessWidget {
   final Color? backgroundColor;
   final Widget child;
   final String? title;
+  final Widget? bottomNavigationBar;
 
   const DefaultLayout({
     required this.child,
     this.backgroundColor,
     this.title,
+    this.bottomNavigationBar,
     Key? key,
   }) : super(key: key);
 
@@ -18,6 +20,7 @@ class DefaultLayout extends StatelessWidget {
       backgroundColor: backgroundColor ?? Colors.white, // 기본배경이 완전 흰색은 아니다.
       appBar: renderAppBar(),
       body: child,
+      bottomNavigationBar: bottomNavigationBar,
     );
   }
 
