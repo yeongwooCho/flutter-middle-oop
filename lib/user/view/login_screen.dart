@@ -26,10 +26,6 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     final dio = Dio();
 
-    // // localhost
-    // String emulatorIp = '10.0.2.2:3000';
-    // String simulatorIp = '127.0.0.1:3000';
-    // String ip = Platform.isAndroid ? emulatorIp : simulatorIp;
     String ip = baseIp;
 
     return DefaultLayout(
