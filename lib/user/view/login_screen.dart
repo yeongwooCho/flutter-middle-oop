@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:code_factory_middle/common/component/custom_text_form_field.dart';
 import 'package:code_factory_middle/common/const/colors.dart';
@@ -25,8 +24,6 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final dio = Dio();
-
-    String ip = baseIp;
 
     return DefaultLayout(
       child: SingleChildScrollView(
@@ -99,20 +96,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Text('로그인'),
                 ),
                 TextButton(
-                  onPressed: () async {
-                    String refreshToken =
-                        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3RAY29kZWZhY3RvcnkuYWkiLCJzdWIiOiJmNTViMzJkMi00ZDY4LTRjMWUtYTNjYS1kYTlkN2QwZDkyZTUiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTY4NDkxOTUxNSwiZXhwIjoxNjg1MDA1OTE1fQ.m4Q_shhqWxnhgqLtgVBXUqhaQibhK07zZW57jQhYWNM';
-
-                    final resp = await dio.post(
-                      'http://$ip/auth/token',
-                      options: Options(
-                        headers: {
-                          'authorization': 'Bearer $refreshToken',
-                        },
-                      ),
-                    );
-                    print(resp);
-                  },
+                  onPressed: () {},
                   style: TextButton.styleFrom(
                     foregroundColor: Colors.black,
                   ),
