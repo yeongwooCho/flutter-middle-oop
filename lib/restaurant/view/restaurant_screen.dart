@@ -1,8 +1,25 @@
+import 'package:code_factory_middle/common/const/data.dart';
 import 'package:code_factory_middle/restaurant/component/restaurant_card.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 class RestaurantScreen extends StatelessWidget {
   const RestaurantScreen({super.key});
+
+  Future<List> paginateRestaurant() async {
+    final dio = Dio();
+
+    final accessToken = await storage.read(key: ACCESS_TOKEN_KEY);
+
+    final resp = await dio.get(
+      'http://$ip/restaurant',
+      options: Options(headers: {
+        "Authorization": 'Bearer $accessToken',
+      }),
+    );
+
+    return resp.data['data']; // body
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -10,17 +27,41 @@ class RestaurantScreen extends StatelessWidget {
       child: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: RestaurantCard(
-            image: Image.asset(
-              'asset/img/food/ddeok_bok_gi.jpg',
-              fit: BoxFit.cover, // 전체
-            ),
-            name: '불타는 떡볶이',
-            tags: ['떡볶이', '치즈', '매운맛'],
-            ratingsCount: 100,
-            deliveryTime: 15,
-            deliveryFee: 2000,
-            ratings: 4.52,
+          child: FutureBuilder<List>(
+            future: paginateRestaurant(),
+            // builder: (context, snapshot) {
+            builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
+              print("snapshot.data: ${snapshot.data}"); // List<dynamic>?
+              print("snapshot.error: ${snapshot.error}");
+
+              if (!snapshot.hasData) {
+                // 물론 데이터가 없을때는 다른 방법으로 제어해야 한다.
+                // 임의로 넣은 것이다.
+                return Container();
+              }
+              return ListView.separated(
+                itemBuilder: (context, index) {
+                  final item = snapshot.data![index];
+
+                  return RestaurantCard(
+                    image: Image.network(
+                      'http://$ip${item['thumbUrl']}',
+                      fit: BoxFit.cover,
+                    ),
+                    name: item['name'],
+                    tags: List<String>.from(item['tags']),
+                    ratingsCount: item['ratingsCount'],
+                    deliveryTime: item['deliveryTime'],
+                    deliveryFee: item['deliveryFee'],
+                    ratings: item['ratings'],
+                  );
+                },
+                separatorBuilder: (_, value) {
+                  return const SizedBox(height: 16.0);
+                },
+                itemCount: snapshot.data!.length, // 어차피 데이터 없으면 위에서 걸린다.
+              );
+            },
           ),
         ),
       ),
