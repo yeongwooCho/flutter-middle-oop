@@ -1,3 +1,5 @@
+import '../../common/const/data.dart';
+
 enum RestaurantPriceRange {
   expensive,
   medium,
@@ -26,4 +28,23 @@ class RestaurantModel {
     required this.deliveryTime,
     required this.deliveryFee,
   });
+
+  // json 으로부터 인스턴스를 만든다.
+  factory RestaurantModel.fromJson({
+    required Map<String, dynamic> json, // json 은 항상 이렇다.
+  }) {
+    return RestaurantModel(
+      id: json['id'],
+      name: json['name'],
+      thumbUrl: 'http://$ip${json['thumbUrl']}',
+      tags: List<String>.from(json['tags']),
+      priceRange: RestaurantPriceRange.values.firstWhere(
+        (element) => element.name == json['priceRange'],
+      ),
+      ratings: json['ratings'],
+      ratingsCount: json['ratingsCount'],
+      deliveryTime: json['deliveryTime'],
+      deliveryFee: json['deliveryFee'],
+    );
+  }
 }
