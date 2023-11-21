@@ -2,6 +2,8 @@ import 'package:code_factory_middle/common/layout/default_layout.dart';
 import 'package:code_factory_middle/restaurant/component/restaurant_card.dart';
 import 'package:flutter/material.dart';
 
+import '../../product/component/product_card.dart';
+
 class RestaurantDetailScreen extends StatelessWidget {
   const RestaurantDetailScreen({super.key});
 
@@ -20,6 +22,10 @@ class RestaurantDetailScreen extends StatelessWidget {
           //   deliveryFee: deliveryFee,
           //   ratings: ratings,
           // ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: ProductCard(),
+          ),
         ],
       ),
     );
