@@ -17,6 +17,34 @@ class RestaurantDetailModel extends RestaurantModel {
     required this.detail,
     required this.products,
   });
+
+  factory RestaurantDetailModel.fromJson({
+    required Map<String, dynamic> json,
+  }) {
+    return RestaurantDetailModel(
+      id: json["id"],
+      name: json["name"],
+      thumbUrl: json["thumbUrl"],
+      tags: List<String>.from(json["tags"]),
+      priceRange: RestaurantPriceRange.values.firstWhere(
+        (element) => element.name == json["priceRange"],
+      ),
+      ratings: json["ratings"],
+      ratingsCount: json["ratingsCount"],
+      deliveryTime: json["deliveryTime"],
+      deliveryFee: json["deliveryFee"],
+      detail: json["detail"],
+      products: json["products"].map(
+        (element) => RestaurantProductModel(
+          id: element['id'],
+          name: element['name'],
+          imgUrl: element['imgUrl'],
+          detail: element['detail'],
+          price: element['price'],
+        ),
+      ),
+    );
+  }
 }
 
 class RestaurantProductModel {
