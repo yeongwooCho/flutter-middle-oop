@@ -1,22 +1,59 @@
 import 'package:code_factory_middle/common/layout/default_layout.dart';
 import 'package:code_factory_middle/product/component/product_card.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
+import '../../common/const/data.dart';
+
 class RestaurantDetailScreen extends StatelessWidget {
-  const RestaurantDetailScreen({super.key});
+  final String id;
+
+  const RestaurantDetailScreen({
+    super.key,
+    required this.id,
+  });
 
   @override
   Widget build(BuildContext context) {
     return DefaultLayout(
       title: '불타는 떡볶이',
-      child: CustomScrollView(
-        slivers: [
-          renderTop(),
-          renderLabel(),
-          renderProducts(),
-        ],
+      child: FutureBuilder(
+        future: getRestaurantDetail(),
+        builder: (context, snapshot) {
+          print("RestaurantDetailScreen snapshot.error: ${snapshot.error}");
+          print("RestaurantDetailScreen snapshot.data: ${snapshot.data}");
+
+          if (!snapshot.hasData) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          return CustomScrollView(
+            slivers: [
+              renderTop(),
+              renderLabel(),
+              renderProducts(),
+            ],
+          );
+        },
       ),
     );
+  }
+
+  Future getRestaurantDetail() async {
+    final dio = Dio();
+
+    final accessToken = await storage.read(key: ACCESS_TOKEN_KEY);
+    final resp = await dio.get(
+      'http://$ip/restaurant/$id',
+      options: Options(
+        headers: {
+          'Authorization': "Bearer $accessToken",
+        },
+      ),
+    );
+    return resp;
   }
 
   SliverPadding renderLabel() {
@@ -51,7 +88,12 @@ class RestaurantDetailScreen extends StatelessWidget {
 
   SliverToBoxAdapter renderTop() {
     return SliverToBoxAdapter(
-      child: Text('adfs'),
+      child: Text(
+        'adfs',
+        style: TextStyle(
+          fontSize: 24.0,
+        ),
+      ),
     );
   }
 }
