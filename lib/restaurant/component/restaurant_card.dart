@@ -1,4 +1,5 @@
 import 'package:code_factory_middle/common/const/colors.dart';
+import 'package:code_factory_middle/restaurant/model/restaurant_detail_model.dart';
 import 'package:code_factory_middle/restaurant/model/restaurant_model.dart';
 import 'package:flutter/material.dart';
 
@@ -14,17 +15,18 @@ class RestaurantCard extends StatelessWidget {
   final bool isDetail; // 상세 페이지 여부
   final String? detail; // 상세 내용
 
-  const RestaurantCard(
-      {super.key,
-      required this.image,
-      required this.name,
-      required this.tags,
-      required this.ratingsCount,
-      required this.deliveryTime,
-      required this.deliveryFee,
-      required this.ratings,
-      this.isDetail = false,
-      this.detail});
+  const RestaurantCard({
+    super.key,
+    required this.image,
+    required this.name,
+    required this.tags,
+    required this.ratingsCount,
+    required this.deliveryTime,
+    required this.deliveryFee,
+    required this.ratings,
+    this.isDetail = false,
+    this.detail,
+  });
 
   factory RestaurantCard.fromModel({
     required RestaurantModel model,
@@ -42,6 +44,7 @@ class RestaurantCard extends StatelessWidget {
       deliveryFee: model.deliveryFee,
       ratings: model.ratings,
       isDetail: isDetail,
+      detail: model is RestaurantDetailModel ? model.detail : null,
     );
   }
 

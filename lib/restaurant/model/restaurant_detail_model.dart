@@ -1,5 +1,7 @@
 import 'package:code_factory_middle/restaurant/model/restaurant_model.dart';
 
+import '../../common/const/data.dart';
+
 class RestaurantDetailModel extends RestaurantModel {
   final String detail;
   final List<RestaurantProductModel> products;
@@ -24,7 +26,7 @@ class RestaurantDetailModel extends RestaurantModel {
     return RestaurantDetailModel(
       id: json["id"],
       name: json["name"],
-      thumbUrl: json["thumbUrl"],
+      thumbUrl: 'http://$ip${json['thumbUrl']}',
       tags: List<String>.from(json["tags"]),
       priceRange: RestaurantPriceRange.values.firstWhere(
         (element) => element.name == json["priceRange"],

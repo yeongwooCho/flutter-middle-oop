@@ -1,5 +1,6 @@
 import 'package:code_factory_middle/common/layout/default_layout.dart';
 import 'package:code_factory_middle/product/component/product_card.dart';
+import 'package:code_factory_middle/restaurant/component/restaurant_card.dart';
 import 'package:code_factory_middle/restaurant/model/restaurant_detail_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +35,7 @@ class RestaurantDetailScreen extends StatelessWidget {
 
           return CustomScrollView(
             slivers: [
-              renderTop(),
+              renderTop(model: item),
               renderLabel(),
               renderProducts(),
             ],
@@ -89,13 +90,11 @@ class RestaurantDetailScreen extends StatelessWidget {
     );
   }
 
-  SliverToBoxAdapter renderTop() {
+  SliverToBoxAdapter renderTop({required RestaurantDetailModel model}) {
     return SliverToBoxAdapter(
-      child: Text(
-        'adfs',
-        style: TextStyle(
-          fontSize: 24.0,
-        ),
+      child: RestaurantCard.fromModel(
+        model: model,
+        isDetail: true,
       ),
     );
   }
