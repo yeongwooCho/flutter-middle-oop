@@ -34,7 +34,7 @@ class RestaurantDetailModel extends RestaurantModel {
       deliveryTime: json["deliveryTime"],
       deliveryFee: json["deliveryFee"],
       detail: json["detail"],
-      products: json["products"].map(
+      products: json["products"].map<RestaurantProductModel>(
         (element) => RestaurantProductModel(
           id: element['id'],
           name: element['name'],
@@ -42,7 +42,7 @@ class RestaurantDetailModel extends RestaurantModel {
           detail: element['detail'],
           price: element['price'],
         ),
-      ),
+      ).toList(),
     );
   }
 }
