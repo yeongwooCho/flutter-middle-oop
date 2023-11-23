@@ -1,5 +1,6 @@
 import 'package:code_factory_middle/common/layout/default_layout.dart';
 import 'package:code_factory_middle/product/component/product_card.dart';
+import 'package:code_factory_middle/restaurant/model/restaurant_detail_model.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
@@ -17,9 +18,9 @@ class RestaurantDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return DefaultLayout(
       title: '불타는 떡볶이',
-      child: FutureBuilder(
+      child: FutureBuilder<Map<String, dynamic>>(
         future: getRestaurantDetail(),
-        builder: (context, snapshot) {
+        builder: (context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
           print("RestaurantDetailScreen snapshot.error: ${snapshot.error}");
           print("RestaurantDetailScreen snapshot.data: ${snapshot.data}");
 
@@ -28,6 +29,8 @@ class RestaurantDetailScreen extends StatelessWidget {
               child: CircularProgressIndicator(),
             );
           }
+
+          final item = RestaurantDetailModel.fromJson(json: snapshot.data!);
 
           return CustomScrollView(
             slivers: [
@@ -41,7 +44,7 @@ class RestaurantDetailScreen extends StatelessWidget {
     );
   }
 
-  Future getRestaurantDetail() async {
+  Future<Map<String, dynamic>> getRestaurantDetail() async {
     final dio = Dio();
 
     final accessToken = await storage.read(key: ACCESS_TOKEN_KEY);
@@ -53,7 +56,7 @@ class RestaurantDetailScreen extends StatelessWidget {
         },
       ),
     );
-    return resp;
+    return resp.data;
   }
 
   SliverPadding renderLabel() {
