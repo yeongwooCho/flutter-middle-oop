@@ -35,6 +35,8 @@ class RestaurantModel {
   factory RestaurantModel.fromJson(Map<String, dynamic> json) =>
       _$RestaurantModelFromJson(json);
 
+  Map<String, dynamic> toJson() => _$RestaurantModelToJson(this);
+
 // // json 으로부터 인스턴스를 만든다.
 // factory RestaurantModel.fromJson({
 //   required Map<String, dynamic> json, // json 은 항상 이렇다.
