@@ -2,6 +2,7 @@ import 'package:code_factory_middle/common/layout/default_layout.dart';
 import 'package:code_factory_middle/product/component/product_card.dart';
 import 'package:code_factory_middle/restaurant/component/restaurant_card.dart';
 import 'package:code_factory_middle/restaurant/model/restaurant_detail_model.dart';
+import 'package:code_factory_middle/restaurant/repository/restaurant_repository.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
@@ -15,15 +16,32 @@ class RestaurantDetailScreen extends StatelessWidget {
     required this.id,
   });
 
+  Future<RestaurantDetailModel> getRestaurantDetail() async {
+    final dio = Dio();
+
+    final repository = RestaurantRepository(
+      dio,
+      baseUrl: 'http://$ip/restaurant',
+    );
+
+    return repository.getRestaurantDetail(id: id);
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultLayout(
       title: '불타는 떡볶이',
-      child: FutureBuilder<Map<String, dynamic>>(
+      child: FutureBuilder<RestaurantDetailModel>(
         future: getRestaurantDetail(),
-        builder: (context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
+        builder: (context, AsyncSnapshot<RestaurantDetailModel> snapshot) {
           print("RestaurantDetailScreen snapshot.error: ${snapshot.error}");
           print("RestaurantDetailScreen snapshot.data: ${snapshot.data}");
+
+          if (snapshot.hasError) {
+            return Center(
+              child: Text(snapshot.error.toString()),
+            );
+          }
 
           if (!snapshot.hasData) {
             return const Center(
@@ -31,33 +49,16 @@ class RestaurantDetailScreen extends StatelessWidget {
             );
           }
 
-          final item = RestaurantDetailModel.fromJson(snapshot.data!);
-
           return CustomScrollView(
             slivers: [
-              renderTop(model: item),
+              renderTop(model: snapshot.data!),
               renderLabel(),
-              renderProducts(products: item.products),
+              renderProducts(products: snapshot.data!.products),
             ],
           );
         },
       ),
     );
-  }
-
-  Future<Map<String, dynamic>> getRestaurantDetail() async {
-    final dio = Dio();
-
-    final accessToken = await storage.read(key: ACCESS_TOKEN_KEY);
-    final resp = await dio.get(
-      'http://$ip/restaurant/$id',
-      options: Options(
-        headers: {
-          'Authorization': "Bearer $accessToken",
-        },
-      ),
-    );
-    return resp.data;
   }
 
   SliverPadding renderLabel() {
