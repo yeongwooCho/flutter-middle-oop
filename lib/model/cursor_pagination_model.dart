@@ -22,11 +22,11 @@ class CursorPagination<T> {
 @JsonSerializable()
 class CursorPaginationMeta {
   final int count;
-  final bool hasMode;
+  final bool hasMore;
 
   CursorPaginationMeta({
     required this.count,
-    required this.hasMode,
+    required this.hasMore,
   });
 
   factory CursorPaginationMeta.fromJson(Map<String, dynamic> json) =>
