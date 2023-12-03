@@ -1,3 +1,4 @@
+import 'package:code_factory_middle/model/cursor_pagination_model.dart';
 import 'package:code_factory_middle/restaurant/component/restaurant_card.dart';
 import 'package:code_factory_middle/restaurant/provider/restaurant_provider.dart';
 import 'package:code_factory_middle/restaurant/view/restaurant_detail_screen.dart';
@@ -11,19 +12,21 @@ class RestaurantScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final data = ref.watch(restaurantProvider);
 
-    // TODO: 추후 예외처리 수정
-    if (data.isEmpty) {
-      return Center(
-        child: const CircularProgressIndicator(),
+    if (data is CursorPaginationLoading) {
+      return const Center(
+        child: CircularProgressIndicator(),
       );
     }
+
+    // TODO: 테스트 용도이다. 다른 상태에 대한 처리가 되어있지 않다.
+    final cp = data as CursorPagination;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: ListView.separated(
-        itemCount: data.length, // 어차피 데이터 없으면 위에서 걸린다.
+        itemCount: cp.data.length, // 어차피 데이터 없으면 위에서 걸린다.
         itemBuilder: (context, index) {
-          final pItem = data[index];
+          final pItem = cp.data[index];
 
           return GestureDetector(
             onTap: () {
