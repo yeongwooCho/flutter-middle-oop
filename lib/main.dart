@@ -1,10 +1,14 @@
-import 'package:code_factory_middle/common/component/custom_text_form_field.dart';
 import 'package:code_factory_middle/common/view/splash_screen.dart';
-import 'package:code_factory_middle/user/view/login_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() {
-  runApp(const _App());
+  runApp(
+    ProviderScope(
+      observers: [],
+      child: _App(),
+    ),
+  );
 }
 
 // primary로 관리하기
