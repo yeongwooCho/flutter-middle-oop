@@ -1,13 +1,10 @@
 import 'package:code_factory_middle/common/layout/default_layout.dart';
-import 'package:code_factory_middle/common/repository/dio/dio.dart';
 import 'package:code_factory_middle/product/component/product_card.dart';
 import 'package:code_factory_middle/restaurant/component/restaurant_card.dart';
 import 'package:code_factory_middle/restaurant/model/restaurant_detail_model.dart';
 import 'package:code_factory_middle/restaurant/repository/restaurant_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../common/const/data.dart';
 
 class RestaurantDetailScreen extends ConsumerWidget {
   final String id;
@@ -17,23 +14,14 @@ class RestaurantDetailScreen extends ConsumerWidget {
     required this.id,
   });
 
-  Future<RestaurantDetailModel> getRestaurantDetail(WidgetRef ref) async {
-    final dio = ref.watch(dioProvider);
-
-    final repository = RestaurantRepository(
-      dio,
-      baseUrl: 'http://$ip/restaurant',
-    );
-
-    return repository.getRestaurantDetail(id: id);
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return DefaultLayout(
       title: '불타는 떡볶이',
       child: FutureBuilder<RestaurantDetailModel>(
-        future: getRestaurantDetail(ref),
+        future: ref.watch(restaurantRepositoryProvider).getRestaurantDetail(
+              id: id,
+            ),
         builder: (context, AsyncSnapshot<RestaurantDetailModel> snapshot) {
           print("RestaurantDetailScreen snapshot.error: ${snapshot.error}");
           print("RestaurantDetailScreen snapshot.data: ${snapshot.data}");
