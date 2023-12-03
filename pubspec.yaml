@@ -43,6 +43,10 @@ dependencies:
   logger: any  #for logging purpose
   json_annotation: ^4.8.0
 
+  # riverpod:
+  flutter_riverpod: ^2.0.2
+  riverpod_annotation: ^1.0.4
+
 
 
 dev_dependencies:
@@ -56,6 +60,7 @@ dev_dependencies:
   retrofit_generator: '>=7.0.0 <8.0.0'   # required dart >=2.19
   build_runner: ^2.3.3
   json_serializable: ^6.6.0
+  riverpod_generator: ^1.0.4
 
 
 
