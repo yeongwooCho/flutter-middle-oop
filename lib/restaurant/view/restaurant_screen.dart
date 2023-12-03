@@ -1,4 +1,4 @@
-import 'package:code_factory_middle/model/cursor_pagination_model.dart';
+import 'package:code_factory_middle/common/model/cursor_pagination_model.dart';
 import 'package:code_factory_middle/restaurant/component/restaurant_card.dart';
 import 'package:code_factory_middle/restaurant/provider/restaurant_provider.dart';
 import 'package:code_factory_middle/restaurant/view/restaurant_detail_screen.dart';

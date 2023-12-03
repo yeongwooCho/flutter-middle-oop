@@ -1,4 +1,4 @@
-import 'package:code_factory_middle/model/cursor_pagination_model.dart';
+import 'package:code_factory_middle/common/model/cursor_pagination_model.dart';
 import 'package:code_factory_middle/restaurant/repository/restaurant_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
