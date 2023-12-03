@@ -1,5 +1,5 @@
-import 'package:code_factory_middle/common/dio/dio.dart';
 import 'package:code_factory_middle/common/layout/default_layout.dart';
+import 'package:code_factory_middle/common/repository/dio/dio.dart';
 import 'package:code_factory_middle/product/component/product_card.dart';
 import 'package:code_factory_middle/restaurant/component/restaurant_card.dart';
 import 'package:code_factory_middle/restaurant/model/restaurant_detail_model.dart';
