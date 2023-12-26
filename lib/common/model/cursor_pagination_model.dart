@@ -32,6 +32,16 @@ class CursorPagination<T> extends CursorPaginationBase {
   factory CursorPagination.fromJson(
           Map<String, dynamic> json, T Function(Object? json) fromJsonT) =>
       _$CursorPaginationFromJson(json, fromJsonT);
+
+  CursorPagination copyWith({
+    CursorPaginationMeta? meta,
+    List<T>? data,
+  }) {
+    return CursorPagination(
+      meta: meta ?? this.meta,
+      data: data ?? this.data,
+    );
+  }
 }
 
 @JsonSerializable()
@@ -46,6 +56,17 @@ class CursorPaginationMeta {
 
   factory CursorPaginationMeta.fromJson(Map<String, dynamic> json) =>
       _$CursorPaginationMetaFromJson(json);
+
+
+  CursorPaginationMeta copyWith({
+    int? count,
+    bool? hasMore,
+  }) {
+    return CursorPaginationMeta(
+      count: count ?? this.count,
+      hasMore: hasMore ?? this.hasMore,
+    );
+  }
 }
 
 // 새로고침 상태, 상단 스와이프 잡고 당길때
