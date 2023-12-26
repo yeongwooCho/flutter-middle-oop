@@ -1,4 +1,5 @@
 import 'package:code_factory_middle/common/model/cursor_pagination_model.dart';
+import 'package:code_factory_middle/common/model/pagination_params.dart';
 import 'package:code_factory_middle/restaurant/repository/restaurant_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -63,6 +64,47 @@ class RestaurantStateNotifier extends StateNotifier<CursorPaginationBase> {
 
     if (fetchMore && (isLoading || isRefetching || isFetchingMore)) {
       return;
+    }
+
+    // PaginationParams 생성
+    PaginationParams paginationParams = PaginationParams(
+      count: fetchCount, // 기본 값으로 지정되어 있지만 fetchCount 값이 다르게 요청 될 수 있음.
+    );
+
+    // fetchMore
+    // 데이터를 추가로 더 가져오는 상황 -> 무조건 데이터를 갖고 있다. 그렇게 되도록 구현할 것이기에.
+    if (fetchMore) {
+      final pState = state as CursorPagination;
+
+      // State를 CursorPagination에서 CursorPaginationFetchingMore 상태로 변경
+      state = CursorPaginationFetchingMore(
+        meta: pState.meta,
+        data: pState.data,
+      );
+
+      // 중요한 것은 after에 넣으주냐 안 넣어주냐이다.
+      paginationParams = paginationParams.copyWith(
+        // data 가 null인 상황은 없다. fetchMore==true는 이미 데이터가 있다는 뜻이며 그렇게 구현할 것이기에.
+        after: pState.data.last.id,
+      );
+    }
+
+    // 최근 데이터
+    // resp is CursorPagination<RestaurantModel>
+    final resp = await repository.paginate(
+      paginationParams: paginationParams,
+    );
+
+    if (state is CursorPaginationFetchingMore) {
+      final pState = state as CursorPaginationFetchingMore;
+
+      // 기존 데이터 + 최신 데이터
+      state = resp.copyWith(
+        data: [
+          ...pState.data, // 기존 데이터
+          ...resp.data, // 최신 데이터
+        ],
+      );
     }
   }
 }
