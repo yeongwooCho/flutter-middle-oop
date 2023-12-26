@@ -20,7 +20,7 @@ class RestaurantStateNotifier extends StateNotifier<CursorPaginationBase> {
     paginate();
   }
 
-  paginate({
+  void paginate({
     int fetchCount = 20,
     bool fetchMore = false,
     // 추가로 데이터 더 가져오기
@@ -40,5 +40,29 @@ class RestaurantStateNotifier extends StateNotifier<CursorPaginationBase> {
 
     // final resp = await repository.paginate();
     // state = resp;
+
+    // 바로 반환하는 상황
+    // 1) hasMore == false (기존 상황에서 이미 다음 데이터가 없다는 값을 들고 있다면)
+    // 2) 로딩 중 -> fetchMore == true
+    //    로딩 중 -> fetchMore == false (새로고침의 의도가 있을 수 있다.)
+
+    // 1) hasMore == false (기존 상황에서 이미 다음 데이터가 없다는 값을 들고 있다면)
+    if (state is CursorPagination && !forceRefetch) {
+      // 데이터가 이미 있고 강제 로딩이 아닌 경우
+      final pState = state as CursorPagination; // 이게 아닌 상황은 없다. 조건 체크 함.
+      // 파스트 스테이트?
+      if (!pState.meta.hasMore) {
+        return;
+      }
+    }
+
+    // 2) 로딩 중 -> fetchMore == true
+    final isLoading = state is CursorPaginationLoading;
+    final isRefetching = state is CursorPaginationRefetching;
+    final isFetchingMore = state is CursorPaginationFetchingMore;
+
+    if (fetchMore && (isLoading || isRefetching || isFetchingMore)) {
+      return;
+    }
   }
 }
