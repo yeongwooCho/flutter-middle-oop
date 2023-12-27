@@ -11,12 +11,24 @@ class RestaurantScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final data = ref.watch(restaurantProvider);
-
+    
+    // 로딩
     if (data is CursorPaginationLoading) {
       return const Center(
         child: CircularProgressIndicator(),
       );
     }
+    
+    // 에러
+    if (data is CursorPaginationError) {
+      return Center(
+        child: Text(data.message),
+      );
+    }
+
+    // CursorPagination
+    // CursorPaginationFetchingMore
+    // CursorPaginationRefetching
 
     // TODO: 테스트 용도이다. 다른 상태에 대한 처리가 되어있지 않다.
     final cp = data as CursorPagination;
