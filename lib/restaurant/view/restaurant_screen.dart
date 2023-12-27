@@ -60,8 +60,21 @@ class _RestaurantScreenState extends ConsumerState<RestaurantScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: ListView.separated(
         controller: controller,
-        itemCount: cp.data.length, // 어차피 데이터 없으면 위에서 걸린다.
+        itemCount: cp.data.length + 1, // 어차피 데이터 없으면 위에서 걸린다.
         itemBuilder: (context, index) {
+          if (index == cp.data.length) {
+            // 마지막 아이템 1개는 로딩 뷰를 집어넣는다.
+            return Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              child: Center(
+                child: data is CursorPaginationFetchingMore
+                    ? CircularProgressIndicator()
+                    : Text('마지막 데이터 입니다.ㅠㅠ'),
+              ),
+            );
+          }
+
           final pItem = cp.data[index];
 
           return GestureDetector(
