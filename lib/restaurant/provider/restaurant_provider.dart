@@ -8,7 +8,7 @@ final restaurantDetailProvider =
     Provider.family<RestaurantModel?, String>((ref, id) {
   final state = ref.watch(restaurantProvider);
 
-  if (state is! CursorPagination<RestaurantModel>) {
+  if (state is! CursorPagination) {
     return null;
   }
 
@@ -33,7 +33,7 @@ class RestaurantStateNotifier extends StateNotifier<CursorPaginationBase> {
     paginate();
   }
 
-  void paginate({
+  Future<void> paginate({
     int fetchCount = 20,
     bool fetchMore = false,
     // 추가로 데이터 더 가져오기
@@ -141,5 +141,34 @@ class RestaurantStateNotifier extends StateNotifier<CursorPaginationBase> {
     } catch (e) {
       state = CursorPaginationError(message: '데이터를 가져오지 못했습니다.');
     }
+  }
+
+  void getDetail({
+    required String id,
+  }) async {
+    // 만약 데이터가 아직 하나도 없는 상태라면 (state가 CursorPagination이 아니라면)
+    // 데이터를 가져오는 시도를 한다.
+    if (state is! CursorPagination) {
+      await paginate();
+    }
+
+    // state가 CursorPagination이 아닐때 그냥 리턴, 서버에서 문제가 생긴 것이다.
+    if (state is! CursorPagination) {
+      return;
+    }
+
+    // 여기서부터 진짜 로직이다. CursorPagination임이 확실하며 데이터를 받아왔다.
+    final pState = state as CursorPagination;
+
+    final resp = await repository.getRestaurantDetail(id: id);
+
+    // pState에 있는 데이터 중 id 에 해당하는 값을 찾아서 resp로 대체해야 한다.
+    // 첫 요청이면 pState에 들어있는 값은 RestaurantModel의 형태이기 때문이다.
+    state = pState.copyWith(
+      data: pState.data
+          .map<RestaurantModel>((e) => e.id == id ? resp : e)
+          .toList(),
+    );
+    // 내가 요청을 한 데이터만 RestaurantModel에서 RestaurantDetail로 변경이 된다.
   }
 }
