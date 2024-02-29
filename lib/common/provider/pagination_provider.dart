@@ -1,10 +1,13 @@
 import 'package:code_factory_middle/common/model/cursor_pagination_model.dart';
+import 'package:code_factory_middle/common/model/model_with_id.dart';
 import 'package:code_factory_middle/common/model/pagination_params.dart';
 import 'package:code_factory_middle/common/repository/pagination/base_pagination_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class PaginationProvider<U extends IBasePaginationRepository>
-    extends StateNotifier<CursorPaginationBase> {
+class PaginationProvider<
+T extends IModelWithId,
+U extends IBasePaginationRepository<T>
+> extends StateNotifier<CursorPaginationBase> {
   final U repository;
 
   PaginationProvider({
@@ -65,7 +68,7 @@ class PaginationProvider<U extends IBasePaginationRepository>
       // fetchMore
       // 데이터를 추가로 더 가져오는 상황 -> 무조건 데이터를 갖고 있다. 그렇게 되도록 구현할 것이기에.
       if (fetchMore) {
-        final pState = state as CursorPagination;
+        final pState = state as CursorPagination<T>;
 
         // State를 CursorPagination에서 CursorPaginationFetchingMore 상태로 변경
         state = CursorPaginationFetchingMore(
@@ -84,8 +87,8 @@ class PaginationProvider<U extends IBasePaginationRepository>
         // 만약 데이터가 있는 상황이면 기존 데이터를 보존한 채로 fetch(API 요청)를 진행
         if (state is CursorPagination && !forceRefetch) {
           // 굳이 데이터를 다 날릴 필요가 없다. 유지한 채로 새로운 데이터가 들어올 때 대처 하는게 빨라 보인다.
-          final pState = state as CursorPagination;
-          state = CursorPaginationRefetching(
+          final pState = state as CursorPagination<T>;
+          state = CursorPaginationRefetching<T>(
             meta: pState.meta,
             data: pState.data,
           );
@@ -104,7 +107,7 @@ class PaginationProvider<U extends IBasePaginationRepository>
       );
 
       if (state is CursorPaginationFetchingMore) {
-        final pState = state as CursorPaginationFetchingMore;
+        final pState = state as CursorPaginationFetchingMore<T>;
 
         // 기존 데이터 + 최신 데이터
         state = resp.copyWith(

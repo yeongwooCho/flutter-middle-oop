@@ -1,3 +1,4 @@
+import 'package:code_factory_middle/common/model/model_with_id.dart';
 import 'package:code_factory_middle/common/utils/data_utils.dart';
 import 'package:code_factory_middle/user/model/user_model.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -5,7 +6,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'rating_model.g.dart';
 
 @JsonSerializable()
-class RatingModel {
+class RatingModel implements IModelWithId {
   final String id;
   final UserModel user;
   final int rating;
@@ -20,10 +21,10 @@ class RatingModel {
     required this.content,
     required this.imgUrls,
   });
-  
-  factory RatingModel.fromJson(Map<String, dynamic> json) => 
+
+  factory RatingModel.fromJson(Map<String, dynamic> json) =>
       _$RatingModelFromJson(json);
-  
+
   @override
   Map<String, dynamic> toJson() => _$RatingModelToJson(this);
 }
