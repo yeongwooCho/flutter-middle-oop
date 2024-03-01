@@ -1,5 +1,6 @@
 import 'package:code_factory_middle/common/layout/default_layout.dart';
 import 'package:code_factory_middle/common/model/cursor_pagination_model.dart';
+import 'package:code_factory_middle/common/utils/pagination_utils.dart';
 import 'package:code_factory_middle/product/component/product_card.dart';
 import 'package:code_factory_middle/rating/component/rating_card.dart';
 import 'package:code_factory_middle/rating/model/rating_model.dart';
@@ -27,11 +28,22 @@ class RestaurantDetailScreen extends ConsumerStatefulWidget {
 
 class _RestaurantDetailScreenState
     extends ConsumerState<RestaurantDetailScreen> {
+  final ScrollController controller = ScrollController();
+
   @override
   void initState() {
     super.initState();
 
+    controller.addListener(scrollListener);
+
     ref.read(restaurantProvider.notifier).getDetail(id: widget.id);
+  }
+
+  void scrollListener() {
+    PaginationUtils.paginate(
+      controller: controller,
+      provider: ref.read(restaurantRatingProvider(widget.id).notifier),
+    );
   }
 
   @override
@@ -50,6 +62,7 @@ class _RestaurantDetailScreenState
     return DefaultLayout(
       title: '불타는 떡볶이',
       child: CustomScrollView(
+        controller: controller,
         slivers: [
           renderTop(model: state),
           if (state is! RestaurantDetailModel) renderLoading(),
@@ -70,11 +83,13 @@ class _RestaurantDetailScreenState
       padding: const EdgeInsets.symmetric(horizontal: 16.0,vertical: 16.0),
       sliver: SliverList(
         delegate: SliverChildBuilderDelegate(
-          (context, index) => Padding(
-            padding: const EdgeInsets.only(bottom: 16.0),
-            child: RatingCard.fromModel(model: models[index]),
-          ),
-          childCount: models.length,
+          (context, index) => models.length != index
+              ? Padding(
+                  padding: const EdgeInsets.only(bottom: 16.0),
+                  child: RatingCard.fromModel(model: models[index]),
+                )
+              : const Center(child: CircularProgressIndicator()),
+          childCount: models.length + 1,
         ),
       ),
     );
@@ -90,7 +105,7 @@ class _RestaurantDetailScreenState
         delegate: SliverChildListDelegate(
           List.generate(
             3,
-            (index) => Padding(
+                (index) => Padding(
               padding: const EdgeInsets.only(bottom: 32.0),
               child: SkeletonParagraph(
                 style: const SkeletonParagraphStyle(

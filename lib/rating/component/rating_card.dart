@@ -41,6 +41,7 @@ class RatingCard extends StatelessWidget {
         _Header(avatarImage: avatarImage, rating: rating, email: email),
         const SizedBox(height: 8.0),
         _Body(content: content),
+        const SizedBox(height: 8.0),
         if (images.isNotEmpty)
           SizedBox(
             height: 100.0,
