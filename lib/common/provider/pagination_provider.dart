@@ -121,7 +121,9 @@ U extends IBasePaginationRepository<T>
       } else {
         state = resp;
       }
-    } catch (e) {
+    } catch (e, stack) {
+      print("error: $e");
+      print("stack: $stack");
       state = CursorPaginationError(message: '데이터를 가져오지 못했습니다.');
     }
   }
