@@ -1,9 +1,9 @@
 import 'package:code_factory_middle/common/model/cursor_pagination_model.dart';
-import 'package:code_factory_middle/common/model/pagination_params.dart';
 import 'package:code_factory_middle/common/provider/pagination_provider.dart';
 import 'package:code_factory_middle/restaurant/model/restaurant_model.dart';
 import 'package:code_factory_middle/restaurant/repository/restaurant_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:collection/collection.dart';
 
 final restaurantDetailProvider =
     Provider.family<RestaurantModel?, String>((ref, id) {
@@ -13,7 +13,7 @@ final restaurantDetailProvider =
     return null;
   }
 
-  return state.data.firstWhere((element) => element.id == id);
+  return state.data.firstWhereOrNull((element) => element.id == id);
 });
 
 final restaurantProvider =
@@ -50,13 +50,25 @@ class RestaurantStateNotifier
 
     final resp = await repository.getRestaurantDetail(id: id);
 
-    // pState에 있는 데이터 중 id 에 해당하는 값을 찾아서 resp로 대체해야 한다.
-    // 첫 요청이면 pState에 들어있는 값은 RestaurantModel의 형태이기 때문이다.
-    state = pState.copyWith(
-      data: pState.data
-          .map<RestaurantModel>((e) => e.id == id ? resp : e)
-          .toList(),
-    );
-    // 내가 요청을 한 데이터만 RestaurantModel에서 RestaurantDetail로 변경이 된다.
+    // state == [Restaurant(1), Restaurant(2), Restaurant(3)] 일때 id==10 이면
+    // list.where((e) => e.id == 10) 을 찾을 수 없다.
+    // 데이터가 없으면 캐시의 끝에 데이터를 추가한다.
+    if (pState.data.where((element) => element.id == id).isEmpty) {
+      state = pState.copyWith(
+        data: <RestaurantModel>[
+          ...pState.data,
+          resp,
+        ],
+      );
+    } else {
+      // pState에 있는 데이터 중 id 에 해당하는 값을 찾아서 resp로 대체해야 한다.
+      // 첫 요청이면 pState에 들어있는 값은 RestaurantModel의 형태이기 때문이다.
+      state = pState.copyWith(
+        data: pState.data
+            .map<RestaurantModel>((e) => e.id == id ? resp : e)
+            .toList(),
+      );
+      // 내가 요청을 한 데이터만 RestaurantModel에서 RestaurantDetail로 변경이 된다.
+    }
   }
 }
