@@ -1,100 +1,32 @@
-import 'package:code_factory_middle/common/model/cursor_pagination_model.dart';
-import 'package:code_factory_middle/common/utils/pagination_utils.dart';
+import 'package:code_factory_middle/common/component/pagination_list_view.dart';
 import 'package:code_factory_middle/restaurant/component/restaurant_card.dart';
 import 'package:code_factory_middle/restaurant/provider/restaurant_provider.dart';
 import 'package:code_factory_middle/restaurant/view/restaurant_detail_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class RestaurantScreen extends ConsumerStatefulWidget {
+class RestaurantScreen extends StatelessWidget {
   const RestaurantScreen({super.key});
 
   @override
-  ConsumerState<RestaurantScreen> createState() => _RestaurantScreenState();
-}
-
-class _RestaurantScreenState extends ConsumerState<RestaurantScreen> {
-  final ScrollController controller = ScrollController();
-
-  @override
-  void initState() {
-    super.initState();
-
-    controller.addListener(scrollListener);
-  }
-
-  void scrollListener() {
-    PaginationUtils.paginate(
-      controller: controller,
-      provider: ref.read(restaurantProvider.notifier),
-    );
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final data = ref.watch(restaurantProvider);
-
-    // 로딩
-    if (data is CursorPaginationLoading) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
-    }
-
-    // 에러
-    if (data is CursorPaginationError) {
-      return Center(
-        child: Text(data.message),
-      );
-    }
-
-    // CursorPagination
-    // CursorPaginationFetchingMore
-    // CursorPaginationRefetching
-
-    // TODO: 테스트 용도이다. 다른 상태에 대한 처리가 되어있지 않다.
-    final cp = data as CursorPagination;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: ListView.separated(
-        controller: controller,
-        itemCount: cp.data.length + 1, // 어차피 데이터 없으면 위에서 걸린다.
-        itemBuilder: (context, index) {
-          if (index == cp.data.length) {
-            // 마지막 아이템 1개는 로딩 뷰를 집어넣는다.
-            return Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              child: Center(
-                child: data is CursorPaginationFetchingMore
-                    ? CircularProgressIndicator()
-                    : Text('마지막 데이터 입니다.ㅠㅠ'),
+    return PaginationListView(
+      provider: restaurantProvider,
+      itemBuilder: <RestaurantModel>(
+        context,
+        index,
+        model,
+      ) {
+        return GestureDetector(
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => RestaurantDetailScreen(id: model.id),
               ),
             );
-          }
-
-          final pItem = cp.data[index];
-
-          return GestureDetector(
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => RestaurantDetailScreen(
-                    id: pItem.id,
-                  ),
-                ),
-              );
-            },
-            child: RestaurantCard.fromModel(
-              model: pItem,
-            ),
-          );
-        },
-        separatorBuilder: (_, value) {
-          return const SizedBox(height: 16.0);
-        },
-      ),
+          },
+          child: RestaurantCard.fromModel(model: model),
+        );
+      },
     );
   }
 }
