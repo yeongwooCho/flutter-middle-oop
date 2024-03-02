@@ -1,6 +1,7 @@
 import 'package:code_factory_middle/common/model/model_with_id.dart';
 import 'package:code_factory_middle/common/utils/data_utils.dart';
 import 'package:code_factory_middle/restaurant/model/restaurant_detail_model.dart';
+import 'package:code_factory_middle/restaurant/model/restaurant_model.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'product_model.g.dart';
@@ -15,7 +16,7 @@ class ProductModel implements IModelWithId {
   final String imgUrl;
   final String detail;
   final int price;
-  final RestaurantProductModel restaurant;
+  final RestaurantModel restaurant;
 
   ProductModel({
     required this.id,
