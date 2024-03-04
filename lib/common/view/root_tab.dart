@@ -1,6 +1,7 @@
 import 'package:code_factory_middle/common/const/colors.dart';
 import 'package:code_factory_middle/common/layout/default_layout.dart';
 import 'package:code_factory_middle/product/view/product_screen.dart';
+import 'package:code_factory_middle/user/view/profile_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../../restaurant/view/restaurant_screen.dart';
@@ -51,7 +52,7 @@ class _RootTabState extends State<RootTab> with SingleTickerProviderStateMixin {
           RestaurantScreen(),
           ProductScreen(),
           Container(child: Text('주문')),
-          Container(child: Text('프로필')),
+          ProfileScreen(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
