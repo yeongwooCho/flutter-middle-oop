@@ -48,6 +48,9 @@ dependencies:
   flutter_riverpod: ^2.0.2
   riverpod_annotation: ^1.0.4
 
+  # go_router
+  go_router: ^7.0.1
+
 
 
 dev_dependencies:
