@@ -55,6 +55,10 @@ class AuthProvider extends ChangeNotifier {
         ),
       ];
 
+  void logout() {
+    ref.read(userMeProvider.notifier).logout();
+  }
+
   // SplashScreen 로직
   // 앱이 처음 시작하면 토큰 여부로 로그인 스크린에 보내거나 홈 스크린 으로 보낸다.
   String? redirectLogic(BuildContext context, GoRouterState state) {
