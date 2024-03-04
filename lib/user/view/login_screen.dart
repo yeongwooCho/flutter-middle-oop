@@ -1,13 +1,8 @@
-import 'dart:convert';
-
 import 'package:code_factory_middle/common/component/custom_text_form_field.dart';
 import 'package:code_factory_middle/common/const/colors.dart';
-import 'package:code_factory_middle/common/const/data.dart';
 import 'package:code_factory_middle/common/layout/default_layout.dart';
-import 'package:code_factory_middle/common/repository/secure_storage/secure_storage.dart';
-import 'package:code_factory_middle/common/view/root_tab.dart';
+import 'package:code_factory_middle/user/model/user_model.dart';
 import 'package:code_factory_middle/user/provider/user_me_provider.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -26,7 +21,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final dio = Dio();
+    final state = ref.watch(userMeProvider);
 
     return DefaultLayout(
       child: SingleChildScrollView(
@@ -35,7 +30,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           top: true,
           bottom: false,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -64,12 +60,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 ),
                 const SizedBox(height: 16.0),
                 ElevatedButton(
-                  onPressed: () async {
-                    ref.read(userMeProvider.notifier).login(
-                          username: username,
-                          password: password,
-                        );
-                  },
+                  onPressed: state is UserModelLoading
+                      ? null
+                      : () async {
+                          ref.read(userMeProvider.notifier).login(
+                                username: username,
+                                password: password,
+                              );
+                        },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: PRIMARY_COLOR,
                   ),
