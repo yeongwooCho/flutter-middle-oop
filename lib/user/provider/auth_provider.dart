@@ -45,7 +45,7 @@ class AuthProvider extends ChangeNotifier {
           ],
         ),
         GoRoute(
-          path: 'basket',
+          path: '/basket',
           name: BasketScreen.routeName,
           builder: (_, state) => BasketScreen(),
         ),
