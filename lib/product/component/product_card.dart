@@ -148,37 +148,42 @@ class _Footer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: Text(
-            '총액 ₩$total원',
-            style: const TextStyle(
-              color: PRIMARY_COLOR,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ),
-        Row(
-          children: [
-            renderButton(
-              icon: Icons.remove,
-              onTap: onSubtract,
-            ),
-            Text(
-              count.toString(),
+    return Padding(
+      padding: const EdgeInsets.only(top: 8.0),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              '총액 ₩$total원',
               style: const TextStyle(
                 color: PRIMARY_COLOR,
                 fontWeight: FontWeight.w500,
               ),
             ),
-            renderButton(
-              icon: Icons.add,
-              onTap: onAdd,
-            ),
-          ],
-        ),
-      ],
+          ),
+          Row(
+            children: [
+              renderButton(
+                icon: Icons.remove,
+                onTap: onSubtract,
+              ),
+              const SizedBox(width: 8.0),
+              Text(
+                count.toString(),
+                style: const TextStyle(
+                  color: PRIMARY_COLOR,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(width: 8.0),
+              renderButton(
+                icon: Icons.add,
+                onTap: onAdd,
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
