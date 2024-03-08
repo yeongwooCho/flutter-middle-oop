@@ -6,7 +6,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'order_model.g.dart';
 
 @JsonSerializable()
-class OrderProductModel {
+class OrderProductModel implements IModelWithId {
   final String id;
   final String name;
   final String detail;
