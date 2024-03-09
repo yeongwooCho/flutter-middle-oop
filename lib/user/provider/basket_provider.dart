@@ -3,6 +3,7 @@ import 'package:code_factory_middle/user/model/basket_item_model.dart';
 import 'package:code_factory_middle/user/model/patch_basket_body.dart';
 import 'package:code_factory_middle/user/repository/user_me_repository.dart';
 import 'package:collection/collection.dart';
+import 'package:debounce_throttle/debounce_throttle.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final basketProvider =
@@ -14,10 +15,19 @@ final basketProvider =
 
 class BasketStateNotifier extends StateNotifier<List<BasketItemModel>> {
   final UserMeRepository repository;
+  final updateBasketDebounce = Debouncer(
+    Duration(seconds: 1),
+    initialValue: null,
+    checkEquality: false,
+  );
 
   BasketStateNotifier({
     required this.repository,
-  }) : super([]);
+  }) : super([]) {
+    updateBasketDebounce.values.listen((event) async {
+      await patchBasket();
+    });
+  }
 
   Future<void> patchBasket() async {
     await repository.patchBasket(
@@ -55,7 +65,7 @@ class BasketStateNotifier extends StateNotifier<List<BasketItemModel>> {
       ];
     }
 
-    await patchBasket();
+    updateBasketDebounce.setValue(null);
   }
 
   Future<void> removeFromBasket({
@@ -85,6 +95,6 @@ class BasketStateNotifier extends StateNotifier<List<BasketItemModel>> {
       }
     }
 
-    await patchBasket();
+    updateBasketDebounce.setValue(null);
   }
 }
