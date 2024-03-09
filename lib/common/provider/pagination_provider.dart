@@ -2,18 +2,47 @@ import 'package:code_factory_middle/common/model/cursor_pagination_model.dart';
 import 'package:code_factory_middle/common/model/model_with_id.dart';
 import 'package:code_factory_middle/common/model/pagination_params.dart';
 import 'package:code_factory_middle/common/repository/pagination/base_pagination_repository.dart';
+import 'package:debounce_throttle/debounce_throttle.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class PaginationProvider<
-T extends IModelWithId,
-U extends IBasePaginationRepository<T>
-> extends StateNotifier<CursorPaginationBase> {
+class _PaginationInfo {
+  final int fetchCount;
+  final bool fetchMore;
+
+  // 추가로 데이터 더 가져오기
+  // true - 추가로 데이터 더 가져옴 (현 데이터를 유지한채 새로고침)
+  // false - 새로고침 (현재 상태를 덮어씌움)
+
+  final bool forceRefetch;
+
+  // 강제로 다시 로딩하기
+  // true - CursorPaginationLoading()
+
+  _PaginationInfo({
+    this.fetchCount = 20,
+    this.fetchMore = false,
+    this.forceRefetch = false,
+  });
+}
+
+class PaginationProvider<T extends IModelWithId,
+        U extends IBasePaginationRepository<T>>
+    extends StateNotifier<CursorPaginationBase> {
   final U repository;
+  final paginationThrottle = Throttle(
+    const Duration(seconds: 3),
+    initialValue: _PaginationInfo(),
+    checkEquality: false, // true: 함수 실행 시 넣어주는 값이 같으면 실행 하지 않음.
+  );
 
   PaginationProvider({
     required this.repository,
   }) : super(CursorPaginationLoading()) {
     paginate();
+
+    paginationThrottle.values.listen((event) {
+      _throttledPagination(event);
+    });
   }
 
   Future<void> paginate({
@@ -27,6 +56,20 @@ U extends IBasePaginationRepository<T>
     // 강제로 다시 로딩하기
     // true - CursorPaginationLoading()
   }) async {
+    paginationThrottle.setValue(
+      _PaginationInfo(
+        fetchCount: fetchCount,
+        fetchMore: fetchMore,
+        forceRefetch: forceRefetch,
+      ),
+    );
+  }
+
+  _throttledPagination(_PaginationInfo info) async {
+    final fetchCount = info.fetchCount;
+    final fetchMore = info.fetchMore;
+    final forceRefetch = info.forceRefetch;
+
     try {
       // state 의 상태 5가지
       // 1) CursorPagination State - 정상적으로 데이터가 있는 상태
