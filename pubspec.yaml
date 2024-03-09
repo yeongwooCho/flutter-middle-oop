@@ -40,6 +40,7 @@ dependencies:
   skeletons: ^0.0.3
   badges: ^3.1.2
   uuid: ^4.2.2
+  debounce_throttle: ^2.0.0
 
   # json, retrofit
   retrofit: '>=4.0.0 <5.0.0'
